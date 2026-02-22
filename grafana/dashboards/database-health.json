@@ -398,6 +398,17 @@
           "refId": "A"
         }
       ],
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              { "fieldName": "metric", "handlerKey": "field.name" },
+              { "fieldName": "value", "handlerKey": "field.value" }
+            ]
+          }
+        }
+      ],
       "options": {
         "legend": {
           "displayMode": "table",
@@ -436,6 +447,17 @@
           "rawSql": "SELECT datname AS \"metric\", count(*) AS \"value\" FROM pg_stat_activity WHERE datname IS NOT NULL GROUP BY datname;",
           "format": "table",
           "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              { "fieldName": "metric", "handlerKey": "field.name" },
+              { "fieldName": "value", "handlerKey": "field.value" }
+            ]
+          }
         }
       ],
       "options": {
@@ -1215,6 +1237,17 @@
           "rawSql": "SELECT mode AS \"metric\", count(*) AS \"value\" FROM pg_locks WHERE database IS NOT NULL GROUP BY mode ORDER BY count(*) DESC;",
           "format": "table",
           "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              { "fieldName": "metric", "handlerKey": "field.name" },
+              { "fieldName": "value", "handlerKey": "field.value" }
+            ]
+          }
         }
       ],
       "options": {

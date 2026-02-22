@@ -79,6 +79,28 @@ SELECT create_hypertable('metrics', 'time');
 - Prometheus: `{ "type": "prometheus", "uid": "prometheus" }`
 - TimescaleDB: `{ "type": "grafana-postgresql-datasource", "uid": "timescaledb" }`
 
+### Common pitfalls
+
+**Pie charts with SQL datasources:** Grafana pie charts expect each **column** to be a separate slice. If your SQL returns rows like `metric | value`, the pie chart will show a single "value" entry in the legend instead of one per category. Fix this by adding a `rowsToFields` transformation to the panel:
+
+```json
+"transformations": [
+  {
+    "id": "rowsToFields",
+    "options": {
+      "mappings": [
+        { "fieldName": "metric", "handlerKey": "field.name" },
+        { "fieldName": "value", "handlerKey": "field.value" }
+      ]
+    }
+  }
+]
+```
+
+Your SQL should return exactly two columns: a label column (mapped to `field.name`) and a numeric column (mapped to `field.value`). The transformation pivots rows into columns so each category becomes its own field.
+
+**Timeseries panels:** Never use the color gradient fill option (`fillOpacity` with `gradientMode: "scheme"` or `"opacity"`) on timeseries charts. It makes overlapping series unreadable and obscures the actual data. Use `"gradientMode": "none"` or a low fixed `fillOpacity` (e.g. 10) if you want subtle area shading.
+
 ## How to Create Grafana Folders
 
 Dashboards can be organized into folders. There are two methods:
