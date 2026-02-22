@@ -64,11 +64,12 @@ echo "[03] Configuring TimescaleDB datasource via API..."
 GRAFANA_AUTH="${GRAFANA_ADMIN_USER}:${GRAFANA_ADMIN_PASSWORD}"
 DS_URL="http://localhost:${GRAFANA_PORT}/api/datasources"
 
-# Build JSON payload using Python to avoid shell escaping issues
+# Build JSON payloads using Python to avoid shell escaping issues
 DS_PAYLOAD=$(python3 -c "
 import json
 print(json.dumps({
     'name': 'TimescaleDB',
+    'uid': 'timescaledb',
     'type': 'grafana-postgresql-datasource',
     'access': 'proxy',
     'url': 'localhost:${PG_PORT}',
@@ -90,55 +91,55 @@ print(json.dumps({
 }))
 ")
 
-# Check if datasource already exists
-EXISTING_UID=$(curl -sf "${DS_URL}" \
-  -u "${GRAFANA_AUTH}" \
-  2>/dev/null | python3 -c "
-import sys, json
-ds = json.load(sys.stdin)
-for d in ds:
-    if d['name'] == 'TimescaleDB':
-        print(d['uid'])
-        break
-" 2>/dev/null || true)
+PROM_PAYLOAD=$(python3 -c "
+import json
+print(json.dumps({
+    'name': 'Prometheus',
+    'uid': 'prometheus',
+    'type': 'prometheus',
+    'access': 'proxy',
+    'url': 'http://localhost:${PROMETHEUS_PORT}',
+    'isDefault': False,
+    'jsonData': {
+        'httpMethod': 'POST',
+        'timeInterval': '15s'
+    }
+}))
+")
 
-if [[ -n "${EXISTING_UID}" ]]; then
-  echo "[03] Updating existing datasource (uid: ${EXISTING_UID})..."
-  curl -sf -X DELETE "${DS_URL}/uid/${EXISTING_UID}" \
+# Helper: delete datasource by uid if it exists, then create
+create_datasource() {
+  local name="$1"
+  local uid="$2"
+  local payload="$3"
+
+  # Delete if exists (idempotent re-run)
+  curl -sf -X DELETE "${DS_URL}/uid/${uid}" \
     -u "${GRAFANA_AUTH}" >/dev/null 2>&1 || true
-fi
 
-# Create datasource
-curl -sf -X POST "${DS_URL}" \
-  -u "${GRAFANA_AUTH}" \
-  -H "Content-Type: application/json" \
-  -d "${DS_PAYLOAD}" >/dev/null 2>&1
+  # Create
+  curl -sf -X POST "${DS_URL}" \
+    -u "${GRAFANA_AUTH}" \
+    -H "Content-Type: application/json" \
+    -d "${payload}" >/dev/null 2>&1
+  echo "[03] Created datasource: ${name} (uid: ${uid})"
+}
 
-# Verify datasource connection
-echo "[03] Verifying datasource connection..."
-NEW_UID=$(curl -sf "${DS_URL}" \
-  -u "${GRAFANA_AUTH}" \
-  2>/dev/null | python3 -c "
-import sys, json
-ds = json.load(sys.stdin)
-for d in ds:
-    if d['name'] == 'TimescaleDB':
-        print(d['uid'])
-        break
-" 2>/dev/null || true)
+create_datasource "TimescaleDB" "timescaledb" "${DS_PAYLOAD}"
+create_datasource "Prometheus" "prometheus" "${PROM_PAYLOAD}"
 
-if [[ -n "${NEW_UID}" ]]; then
-  HEALTH=$(curl -sf "${DS_URL}/uid/${NEW_UID}/health" \
+# Verify datasource connections
+echo "[03] Verifying datasource connections..."
+for ds_uid in timescaledb prometheus; do
+  HEALTH=$(curl -sf "${DS_URL}/uid/${ds_uid}/health" \
     -u "${GRAFANA_AUTH}" 2>/dev/null || echo '{"status":"ERROR"}')
   STATUS=$(echo "${HEALTH}" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status','ERROR'))" 2>/dev/null)
   if [[ "${STATUS}" == "OK" ]]; then
-    echo "[03] TimescaleDB datasource connected successfully."
+    echo "[03] ${ds_uid}: connected."
   else
-    echo "[03] WARNING: Datasource created but connection test failed: ${HEALTH}"
+    echo "[03] WARNING: ${ds_uid} connection test failed: ${HEALTH}"
   fi
-else
-  echo "[03] WARNING: Could not verify datasource creation."
-fi
+done
 
 if systemctl is-active --quiet grafana-server; then
   echo "[03] Grafana is RUNNING on port ${GRAFANA_PORT}."

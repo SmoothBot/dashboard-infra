@@ -3,7 +3,11 @@
   "uid": "system-health",
   "title": "System Health",
   "description": "CPU, memory, disk I/O, network, and filesystem usage",
-  "tags": ["infrastructure", "system", "node-exporter"],
+  "tags": [
+    "infrastructure",
+    "system",
+    "node-exporter"
+  ],
   "timezone": "browser",
   "editable": true,
   "graphTooltip": 1,
@@ -19,7 +23,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -32,14 +39,27 @@
     {
       "title": "CPU",
       "type": "row",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "collapsed": false
     },
     {
       "title": "CPU Usage",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 1 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -48,9 +68,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
             ]
           },
           "custom": {
@@ -69,15 +98,29 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "CPU Usage by Mode",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -85,7 +128,9 @@
           "custom": {
             "lineWidth": 1,
             "fillOpacity": 30,
-            "stacking": { "mode": "normal" }
+            "stacking": {
+              "mode": "normal"
+            }
           }
         },
         "overrides": []
@@ -113,19 +158,36 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "Load Average",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
         },
         "overrides": []
       },
@@ -152,28 +214,49 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "Memory",
       "type": "row",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
       "collapsed": false
     },
     {
       "title": "Memory Usage",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
           "custom": {
             "lineWidth": 1,
             "fillOpacity": 30,
-            "stacking": { "mode": "normal" }
+            "stacking": {
+              "mode": "normal"
+            }
           }
         },
         "overrides": []
@@ -201,15 +284,29 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "Memory Usage %",
       "type": "gauge",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 18 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 18
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -218,10 +315,22 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "orange", "value": 85 },
-              { "color": "red", "value": 95 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "orange",
+                "value": 85
+              },
+              {
+                "color": "red",
+                "value": 95
+              }
             ]
           }
         }
@@ -237,12 +346,23 @@
     {
       "title": "Swap Usage",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 18
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "custom": { "lineWidth": 1, "fillOpacity": 20 }
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 20
+          }
         },
         "overrides": []
       },
@@ -259,31 +379,58 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "Disk",
       "type": "row",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
       "collapsed": false
     },
     {
-      "title": "Disk I/O — Read / Write Throughput",
+      "title": "Disk I/O \u2014 Read / Write Throughput",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 27 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
-          "custom": { "lineWidth": 1, "fillOpacity": 15 }
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 15
+          }
         },
         "overrides": [
           {
-            "matcher": { "id": "byRegexp", "options": ".*write.*" },
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*write.*"
+            },
             "properties": [
-              { "id": "custom.transform", "value": "negative-Y" }
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
             ]
           }
         ]
@@ -301,25 +448,48 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
-      "title": "Disk I/O — IOPS",
+      "title": "Disk I/O \u2014 IOPS",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 27 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "iops",
-          "custom": { "lineWidth": 1, "fillOpacity": 15 }
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 15
+          }
         },
         "overrides": [
           {
-            "matcher": { "id": "byRegexp", "options": ".*write.*" },
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*write.*"
+            },
             "properties": [
-              { "id": "custom.transform", "value": "negative-Y" }
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
             ]
           }
         ]
@@ -337,44 +507,95 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "Filesystem Usage",
       "type": "table",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 35 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
       "fieldConfig": {
         "defaults": {},
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "Used %" },
+            "matcher": {
+              "id": "byName",
+              "options": "Used %"
+            },
             "properties": [
-              { "id": "unit", "value": "percent" },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
               {
                 "id": "thresholds",
                 "value": {
                   "mode": "absolute",
                   "steps": [
-                    { "color": "green", "value": null },
-                    { "color": "yellow", "value": 70 },
-                    { "color": "orange", "value": 85 },
-                    { "color": "red", "value": 95 }
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 70
+                    },
+                    {
+                      "color": "orange",
+                      "value": 85
+                    },
+                    {
+                      "color": "red",
+                      "value": 95
+                    }
                   ]
                 }
               },
-              { "id": "custom.displayMode", "value": "color-background-solid" }
+              {
+                "id": "custom.displayMode",
+                "value": "color-background-solid"
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "Size" },
-            "properties": [{ "id": "unit", "value": "bytes" }]
+            "matcher": {
+              "id": "byName",
+              "options": "Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
           },
           {
-            "matcher": { "id": "byName", "options": "Available" },
-            "properties": [{ "id": "unit", "value": "bytes" }]
+            "matcher": {
+              "id": "byName",
+              "options": "Available"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
           }
         ]
       },
@@ -428,30 +649,57 @@
       ],
       "options": {
         "showHeader": true,
-        "sortBy": [{ "displayName": "Used %", "desc": true }]
+        "sortBy": [
+          {
+            "displayName": "Used %",
+            "desc": true
+          }
+        ]
       }
     },
     {
       "title": "Network",
       "type": "row",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 43 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
       "collapsed": false
     },
     {
       "title": "Network Traffic",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 44 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 44
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
-          "custom": { "lineWidth": 1, "fillOpacity": 15 }
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 15
+          }
         },
         "overrides": [
           {
-            "matcher": { "id": "byRegexp", "options": ".*transmit.*" },
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*transmit.*"
+            },
             "properties": [
-              { "id": "custom.transform", "value": "negative-Y" }
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
             ]
           }
         ]
@@ -469,24 +717,47 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "Network Errors & Drops",
       "type": "timeseries",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 44 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 44
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "pps",
-          "custom": { "lineWidth": 1, "fillOpacity": 15 },
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 15
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 1 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
             ]
           }
         },
@@ -515,29 +786,54 @@
         }
       ],
       "options": {
-        "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
       }
     },
     {
       "title": "System Info",
       "type": "row",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
       "collapsed": false
     },
     {
       "title": "Uptime",
       "type": "stat",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 53 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 53
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "orange", "value": null },
-              { "color": "green", "value": 86400 }
+              {
+                "color": "orange",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 86400
+              }
             ]
           }
         }
@@ -550,22 +846,41 @@
           "instant": true
         }
       ],
-      "options": { "colorMode": "background" }
+      "options": {
+        "colorMode": "background"
+      }
     },
     {
       "title": "Open File Descriptors",
       "type": "stat",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 53 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 53
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 50000 },
-              { "color": "red", "value": 90000 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 50000
+              },
+              {
+                "color": "red",
+                "value": 90000
+              }
             ]
           }
         }
@@ -582,17 +897,34 @@
     {
       "title": "Running Processes",
       "type": "stat",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 53 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 53
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 300 },
-              { "color": "red", "value": 500 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 300
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
             ]
           }
         }
@@ -609,17 +941,34 @@
     {
       "title": "Total Entropy",
       "type": "stat",
-      "datasource": "Prometheus",
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 53 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 53
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 200 },
-              { "color": "green", "value": 1000 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 200
+              },
+              {
+                "color": "green",
+                "value": 1000
+              }
             ]
           }
         }
