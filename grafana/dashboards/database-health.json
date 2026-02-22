@@ -1,0 +1,622 @@
+{
+  "id": null,
+  "uid": "database-health",
+  "title": "Database Health",
+  "description": "PostgreSQL / TimescaleDB — connections, throughput, cache, bloat, replication",
+  "tags": ["infrastructure", "database", "timescaledb", "postgresql"],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "title": "Overview",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+    {
+      "title": "Active Connections",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT count(*) AS \"Active\" FROM pg_stat_activity WHERE state = 'active';",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "background" }
+    },
+    {
+      "title": "Total Connections",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 95 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT count(*) AS \"Total\" FROM pg_stat_activity;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "background" }
+    },
+    {
+      "title": "Max Connections",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT setting::int AS \"Max\" FROM pg_settings WHERE name = 'max_connections';",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Database Size",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decbytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10737418240 },
+              { "color": "red", "value": 107374182400 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT pg_database_size(current_database()) AS \"Size\";",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "value" }
+    },
+    {
+      "title": "Uptime",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "orange", "value": null },
+              { "color": "green", "value": 86400 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT extract(epoch FROM (now() - pg_postmaster_start_time()))::bigint AS \"Uptime\";",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "background" }
+    },
+    {
+      "title": "TimescaleDB Version",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT extversion AS \"Version\" FROM pg_extension WHERE extname = 'timescaledb';",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "background" }
+    },
+    {
+      "title": "Connections",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+    {
+      "title": "Connections by State",
+      "type": "piechart",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "active" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "idle" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "idle in transaction" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "idle in transaction (aborted)" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT COALESCE(state, 'other') AS \"metric\", count(*) AS \"value\" FROM pg_stat_activity GROUP BY state;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] },
+        "pieType": "donut",
+        "tooltip": { "mode": "multi" }
+      }
+    },
+    {
+      "title": "Connections by Database",
+      "type": "piechart",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 6 },
+      "fieldConfig": {
+        "defaults": { "unit": "short" }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT datname AS \"metric\", count(*) AS \"value\" FROM pg_stat_activity WHERE datname IS NOT NULL GROUP BY datname;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] },
+        "pieType": "donut",
+        "tooltip": { "mode": "multi" }
+      }
+    },
+    {
+      "title": "Waiting Queries",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 3 },
+              { "color": "red", "value": 10 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT count(*) AS \"Waiting\" FROM pg_stat_activity WHERE wait_event IS NOT NULL AND state = 'active';",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "background", "graphMode": "none" }
+    },
+    {
+      "title": "Performance",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "collapsed": false
+    },
+    {
+      "title": "Cache Hit Ratio",
+      "type": "gauge",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 15 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 90 },
+              { "color": "yellow", "value": 95 },
+              { "color": "green", "value": 99 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT CASE WHEN (blks_hit + blks_read) = 0 THEN 100 ELSE round(blks_hit::numeric / (blks_hit + blks_read) * 100, 2) END AS \"Cache Hit %\" FROM pg_stat_database WHERE datname = current_database();",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Transactions per Second",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 15 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT xact_commit + xact_rollback AS \"TPS\" FROM pg_stat_database WHERE datname = current_database();",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "value" }
+    },
+    {
+      "title": "Commits vs Rollbacks",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 15 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Commits" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rollbacks" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT xact_commit AS \"Commits\", xact_rollback AS \"Rollbacks\" FROM pg_stat_database WHERE datname = current_database();",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "value", "graphMode": "none" }
+    },
+    {
+      "title": "Query Throughput",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "collapsed": false
+    },
+    {
+      "title": "Rows Returned vs Fetched",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 24 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Returned" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Fetched" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT tup_returned AS \"Returned\", tup_fetched AS \"Fetched\" FROM pg_stat_database WHERE datname = current_database();",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "value", "graphMode": "none" }
+    },
+    {
+      "title": "Row Modifications",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 24 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Inserted" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Updated" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Deleted" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT tup_inserted AS \"Inserted\", tup_updated AS \"Updated\", tup_deleted AS \"Deleted\" FROM pg_stat_database WHERE datname = current_database();",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "value", "graphMode": "none" }
+    },
+    {
+      "title": "Temp Files / Bytes",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 24 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100 },
+              { "color": "red", "value": 1000 }
+            ]
+          }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Temp Bytes" }, "properties": [{ "id": "unit", "value": "decbytes" }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT temp_files AS \"Temp Files\", temp_bytes AS \"Temp Bytes\" FROM pg_stat_database WHERE datname = current_database();",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "value", "graphMode": "none" }
+    },
+    {
+      "title": "Table Health",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 30 },
+      "collapsed": false
+    },
+    {
+      "title": "Table Bloat Estimate (Top 20)",
+      "type": "table",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 31 },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Bloat %" }, "properties": [
+            { "id": "unit", "value": "percent" },
+            { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 30 },
+              { "color": "orange", "value": 50 },
+              { "color": "red", "value": 70 }
+            ]}},
+            { "id": "custom.displayMode", "value": "color-background-solid" }
+          ]},
+          { "matcher": { "id": "byName", "options": "Table Size" }, "properties": [{ "id": "unit", "value": "decbytes" }] },
+          { "matcher": { "id": "byName", "options": "Dead Tuples" }, "properties": [{ "id": "unit", "value": "short" }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT schemaname || '.' || relname AS \"Table\", pg_total_relation_size(relid) AS \"Table Size\", n_dead_tup AS \"Dead Tuples\", CASE WHEN n_live_tup > 0 THEN round(n_dead_tup::numeric / n_live_tup * 100, 1) ELSE 0 END AS \"Bloat %\", last_autovacuum AS \"Last Vacuum\" FROM pg_stat_user_tables ORDER BY n_dead_tup DESC LIMIT 20;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Dead Tuples", "desc": true }]
+      }
+    },
+    {
+      "title": "Index Usage",
+      "type": "table",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 31 },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Index Hit %" }, "properties": [
+            { "id": "unit", "value": "percent" },
+            { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 80 },
+              { "color": "green", "value": 95 }
+            ]}},
+            { "id": "custom.displayMode", "value": "color-background-solid" }
+          ]},
+          { "matcher": { "id": "byName", "options": "Rows" }, "properties": [{ "id": "unit", "value": "short" }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT schemaname || '.' || relname AS \"Table\", n_live_tup AS \"Rows\", CASE WHEN (idx_scan + seq_scan) > 0 THEN round(idx_scan::numeric / (idx_scan + seq_scan) * 100, 1) ELSE 0 END AS \"Index Hit %\", seq_scan AS \"Seq Scans\", idx_scan AS \"Idx Scans\" FROM pg_stat_user_tables WHERE (idx_scan + seq_scan) > 0 ORDER BY seq_scan DESC LIMIT 20;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Seq Scans", "desc": true }]
+      }
+    },
+    {
+      "title": "Replication",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 41 },
+      "collapsed": false
+    },
+    {
+      "title": "Replication Lag",
+      "type": "table",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 42 },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Lag (bytes)" }, "properties": [
+            { "id": "unit", "value": "decbytes" },
+            { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1048576 },
+              { "color": "red", "value": 104857600 }
+            ]}},
+            { "id": "custom.displayMode", "value": "color-background-solid" }
+          ]}
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT client_addr AS \"Client\", application_name AS \"App\", state AS \"State\", COALESCE(pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn), 0) AS \"Lag (bytes)\", sync_state AS \"Sync\" FROM pg_stat_replication ORDER BY \"Lag (bytes)\" DESC;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "showHeader": true }
+    },
+    {
+      "title": "Long Running Queries (>5s)",
+      "type": "table",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 42 },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Duration" }, "properties": [{ "id": "unit", "value": "s" }] }
+        ]
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT pid AS \"PID\", usename AS \"User\", datname AS \"Database\", extract(epoch FROM (now() - query_start))::int AS \"Duration\", state AS \"State\", left(query, 80) AS \"Query\" FROM pg_stat_activity WHERE state = 'active' AND query NOT LIKE '%pg_stat_activity%' AND (now() - query_start) > interval '5 seconds' ORDER BY query_start ASC LIMIT 10;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "showHeader": true }
+    },
+    {
+      "title": "Lock Monitoring",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 48 },
+      "collapsed": false
+    },
+    {
+      "title": "Current Locks by Mode",
+      "type": "piechart",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 49 },
+      "fieldConfig": {
+        "defaults": { "unit": "short" }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT mode AS \"metric\", count(*) AS \"value\" FROM pg_locks WHERE database IS NOT NULL GROUP BY mode ORDER BY count(*) DESC;",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value"] },
+        "pieType": "donut"
+      }
+    },
+    {
+      "title": "Blocked Queries",
+      "type": "stat",
+      "datasource": "TimescaleDB",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 49 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT count(*) AS \"Blocked\" FROM pg_stat_activity WHERE wait_event_type = 'Lock';",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "options": { "colorMode": "background", "graphMode": "none" }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}
