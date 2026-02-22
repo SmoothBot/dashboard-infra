@@ -85,11 +85,12 @@ DO \$\$
 BEGIN
   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '${PG_DB_USER}') THEN
     CREATE ROLE ${PG_DB_USER} WITH LOGIN PASSWORD '${PG_DB_PASSWORD}';
-  ELSE
-    ALTER ROLE ${PG_DB_USER} WITH PASSWORD '${PG_DB_PASSWORD}';
   END IF;
 END
 \$\$;
+
+-- Always reset password to ensure hash matches current password_encryption setting
+ALTER ROLE ${PG_DB_USER} WITH PASSWORD '${PG_DB_PASSWORD}';
 
 -- Create database if not exists
 SELECT 'CREATE DATABASE ${PG_DB_NAME} OWNER ${PG_DB_USER}'

@@ -8,6 +8,7 @@ listen_addresses = 'localhost'
 port = ${PG_PORT}
 max_connections = 100
 unix_socket_directories = '/var/run/postgresql'
+password_encryption = scram-sha-256
 
 # --- Memory ---
 shared_buffers = ${PG_SHARED_BUFFERS}
